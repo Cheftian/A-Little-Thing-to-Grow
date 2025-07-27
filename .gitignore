@@ -1,0 +1,67 @@
+# ========================================================================================
+# File .gitignore ini dibuat khusus untuk proyek Unity
+# Mengabaikan file yang dibuat otomatis oleh Unity, sistem operasi, dan IDE
+# ========================================================================================
+
+# Folder yang dibuat oleh Unity dan bisa diregenerasi
+# Ukurannya sangat besar dan spesifik untuk setiap komputer. WAJIB diabaikan.
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+
+# File Memory Profiler
+/[Mm]emory[Cc]aptures/
+/[Aa]ssets/AddressableAssetsData/*/*.bin*
+/[Pp]rofiler[Rr]eports/
+
+# Folder cache untuk package manager Unity
+/[Ll]ocal[Pp]ackages/
+
+# File yang dibuat oleh IDE (Visual Studio, Rider, VSCode)
+# Berisi pengaturan lokal pengguna dan tidak boleh masuk ke repository.
+*.sln.DotSettings.user
+*.suo
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# File spesifik VS Code
+.vscode/
+
+# File yang dibuat oleh Rider
+.idea/
+*.sln.iml
+
+# File spesifik sistem operasi
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+# Windows
+Thumbs.db
+
+# File build output
+# Abaikan semua file dengan ekstensi ini di mana pun lokasinya
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.exe
+*.ipa
+
+# Crash Report
+crash_reporter_logs/
