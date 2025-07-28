@@ -69,31 +69,39 @@ public class PlayerRangedAttack : MonoBehaviour
     private void Aim()
     {
         Vector2 mouseWorldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        
-        // Menentukan arah hadap karakter sebagai vektor
-        Vector2 playerFacingDirection = playerMovement.isFacingRight ? Vector2.right : Vector2.left;
-        
-        // Vektor dari titik tembak ke posisi mouse (arah tarikan)
+
+        // --- LOGIKA PERBAIKAN UNTUK AUTO-FLIP ---
+
+        // 1. Lakukan pengecekan awal HANYA untuk menentukan apakah perlu berbalik.
+        Vector2 initialFacingDirection = playerMovement.isFacingRight ? Vector2.right : Vector2.left;
+        Vector2 initialPullDirection = mouseWorldPosition - (Vector2)launchPoint.position;
+        float initialDotProduct = Vector2.Dot(initialPullDirection, initialFacingDirection);
+
+        if (initialDotProduct > 0 && initialPullDirection.magnitude >= maxForwardPullDistance)
+        {
+            // Jika kondisi terpenuhi, segera balikkan karakter.
+            playerMovement.Flip();
+        }
+
+        // 2. SEKARANG, ulangi semua kalkulasi dari awal dengan arah hadap yang sudah diperbarui.
+        // Ini memastikan semua logika di bawahnya menggunakan data yang paling akurat.
+        Vector2 currentFacingDirection = playerMovement.isFacingRight ? Vector2.right : Vector2.left;
         Vector2 pullDirection = mouseWorldPosition - (Vector2)launchPoint.position;
-        
-        // Menentukan apakah tarikan ke arah depan atau belakang menggunakan Dot Product
-        // Jika hasilnya > 0, berarti mouse berada di depan karakter
-        float dotProduct = Vector2.Dot(pullDirection, playerFacingDirection);
-        
-        // Pilih batas jarak berdasarkan arah tarikan
+        float dotProduct = Vector2.Dot(pullDirection, currentFacingDirection);
+
+        // Pilih batas jarak berdasarkan arah tarikan yang sudah benar.
         float currentMaxPull = (dotProduct > 0) ? maxForwardPullDistance : maxPullDistance;
         
-        // Jika jarak tarikan melebihi batas, "jepit" posisi mouse secara virtual
+        // "Jepit" posisi mouse secara virtual jika melebihi batas.
         if (pullDirection.magnitude > currentMaxPull)
         {
             mouseWorldPosition = (Vector2)launchPoint.position + pullDirection.normalized * currentMaxPull;
         }
 
-        // Hitung ulang arah dan kekuatan berdasarkan posisi mouse yang sudah disesuaikan
+        // Hitung ulang arah dan kekuatan untuk hasil akhir.
         Vector2 launchDirection = (Vector2)launchPoint.position - mouseWorldPosition;
         float distance = Vector2.Distance((Vector2)launchPoint.position, mouseWorldPosition);
         
-        // Skala kekuatan tetap dibagi dengan jarak maksimal agar tarikan ke depan tidak bisa sekuat tarikan ke belakang
         float forceMagnitude = (distance / maxPullDistance) * maxLaunchForce;
         launchForce = launchDirection.normalized * forceMagnitude;
 
@@ -112,9 +120,27 @@ public class PlayerRangedAttack : MonoBehaviour
 
     private void Fire()
     {
-        GameObject projectile = Instantiate(projectilePrefab, launchPoint.position, Quaternion.identity);
-        Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();
-        rb.AddForce(launchForce, ForceMode2D.Impulse);
+        // Membuat instance dari prefab proyektil
+        GameObject projectileInstance = Instantiate(projectilePrefab, launchPoint.position, Quaternion.identity);
+        
+        // --- PERUBAHAN DI SINI ---
+        // Ambil skrip dari proyektil yang baru dibuat
+        Projectile projectileScript = projectileInstance.GetComponent<Projectile>();
+        if (projectileScript != null)
+        {
+            // Atur pemilik proyektil ini adalah Player (objek yang memiliki skrip ini)
+            projectileScript.SetOwner(transform);
+        }
+
+        // Dapatkan komponen Rigidbody2D dari proyektil
+        Rigidbody2D rb = projectileInstance.GetComponent<Rigidbody2D>();
+        if(rb != null)
+        {
+            // Berikan gaya dorong pada proyektil
+            rb.AddForce(launchForce, ForceMode2D.Impulse);
+        }
+
+        // Berhenti membidik setelah menembak
         StopAiming();
     }
 }
