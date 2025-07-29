@@ -1,11 +1,20 @@
 using UnityEngine;
+using System;
 
 public class PlayerRangedAttack : MonoBehaviour
 {
+
+    public static event Action<int> OnAmmoChanged;
+
     [Header("Referensi Komponen")]
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private Transform launchPoint;
     [SerializeField] private LineRenderer trajectoryLine;
+
+    [Header("Amunisi")]
+    [SerializeField] private int maxAmmo = 15;
+    [SerializeField] private int startAmmo = 5;
+    private int currentAmmo;
 
     [Header("Pengaturan Tembakan")]
     [SerializeField] private float maxLaunchForce = 20f;
@@ -33,6 +42,8 @@ public class PlayerRangedAttack : MonoBehaviour
     void Start()
     {
         trajectoryLine.positionCount = 0;
+        currentAmmo = startAmmo;
+        OnAmmoChanged?.Invoke(currentAmmo);
     }
 
     void Update()
@@ -91,7 +102,7 @@ public class PlayerRangedAttack : MonoBehaviour
 
         // Pilih batas jarak berdasarkan arah tarikan yang sudah benar.
         float currentMaxPull = (dotProduct > 0) ? maxForwardPullDistance : maxPullDistance;
-        
+
         // "Jepit" posisi mouse secara virtual jika melebihi batas.
         if (pullDirection.magnitude > currentMaxPull)
         {
@@ -101,7 +112,7 @@ public class PlayerRangedAttack : MonoBehaviour
         // Hitung ulang arah dan kekuatan untuk hasil akhir.
         Vector2 launchDirection = (Vector2)launchPoint.position - mouseWorldPosition;
         float distance = Vector2.Distance((Vector2)launchPoint.position, mouseWorldPosition);
-        
+
         float forceMagnitude = (distance / maxPullDistance) * maxLaunchForce;
         launchForce = launchDirection.normalized * forceMagnitude;
 
@@ -120,27 +131,45 @@ public class PlayerRangedAttack : MonoBehaviour
 
     private void Fire()
     {
-        // Membuat instance dari prefab proyektil
+        // --- CEK AMUNISI SEBELUM MENEMBAK ---
+        if (currentAmmo <= 0)
+        {
+            Debug.Log("Amunisi bawang habis!");
+            StopAiming(); // Batalkan aiming jika tidak punya amunisi
+            return;
+        }
+
+        // Kurangi amunisi
+        currentAmmo--;
+        // Kirim sinyal ke UI bahwa amunisi berkurang
+        OnAmmoChanged?.Invoke(currentAmmo);
+
         GameObject projectileInstance = Instantiate(projectilePrefab, launchPoint.position, Quaternion.identity);
-        
-        // --- PERUBAHAN DI SINI ---
-        // Ambil skrip dari proyektil yang baru dibuat
         Projectile projectileScript = projectileInstance.GetComponent<Projectile>();
         if (projectileScript != null)
         {
-            // Atur pemilik proyektil ini adalah Player (objek yang memiliki skrip ini)
             projectileScript.SetOwner(transform);
         }
 
-        // Dapatkan komponen Rigidbody2D dari proyektil
         Rigidbody2D rb = projectileInstance.GetComponent<Rigidbody2D>();
-        if(rb != null)
+        if (rb != null)
         {
-            // Berikan gaya dorong pada proyektil
             rb.AddForce(launchForce, ForceMode2D.Impulse);
         }
 
-        // Berhenti membidik setelah menembak
         StopAiming();
+    }
+    
+    public void AddAmmo(int amount)
+    {
+        currentAmmo += amount;
+        // Batasi agar tidak melebihi kapasitas maksimal
+        if (currentAmmo > maxAmmo)
+        {
+            currentAmmo = maxAmmo;
+        }
+        Debug.Log("Bawang bertambah! Jumlah sekarang: " + currentAmmo);
+        // Kirim sinyal ke UI bahwa amunisi bertambah
+        OnAmmoChanged?.Invoke(currentAmmo);
     }
 }

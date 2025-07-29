@@ -182,9 +182,9 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 64
-  patrolSpeed: 2
-  chaseSpeed: 3
-  detectionRadius: 5
+  patrolSpeed: 1
+  chaseSpeed: 2
+  detectionRadius: 3
   idleDuration: 2
 --- !u!114 &4009596421564220458
 MonoBehaviour:
@@ -216,8 +216,8 @@ MonoBehaviour:
   flashColor: {r: 1, g: 0, b: 0, a: 1}
   flashDuration: 0.1
   knockbackForce: 10
-  itemDropPrefab: {fileID: 2854394614322083792, guid: 73a73b488c55fbd44851823f13473e95, type: 3}
-  dropChance: 25
+  itemDropPrefab: {fileID: 5395875275626680723, guid: 044a5f760b7670c47bdfbc41c56585cd, type: 3}
+  dropChance: 75
 --- !u!1 &7198581877140011601
 GameObject:
   m_ObjectHideFlags: 0
