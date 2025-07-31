@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 // Definisikan tipe item di luar kelas agar bisa diakses skrip lain
 public enum HeldItemType { None, Water, Fertilizer }
@@ -58,12 +59,13 @@ public class PlayerInteraction : MonoBehaviour
             if(isInteracting) ResetInteraction();
         }
     }
-    
+
     private void PerformInteraction(GameObject target)
     {
         // Cek tipe interaksi
         PickupableItem item = target.GetComponent<PickupableItem>();
         PlantGrowth plant = target.GetComponent<PlantGrowth>();
+        EndingTrigger endTrigger = target.GetComponent<EndingTrigger>();
 
         if (item != null && currentHeldItem == HeldItemType.None) // Mengambil item
         {
@@ -96,6 +98,14 @@ public class PlayerInteraction : MonoBehaviour
             {
                 plant.AttemptUpgrade();
             }
+        }
+        else if (endTrigger != null)
+        {
+                Debug.Log("Memicu ending, memuat scene: " + endTrigger.endingSceneName);
+                // Pastikan waktu kembali normal sebelum pindah scene
+                Time.timeScale = 1f;
+                // Muat scene ending
+                SceneManager.LoadScene(endTrigger.endingSceneName);
         }
     }
 

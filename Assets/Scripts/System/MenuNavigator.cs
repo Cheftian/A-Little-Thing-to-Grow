@@ -3,9 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class MenuNavigator : MonoBehaviour
 {
+    
     public void PlayGame()
     {
-        SceneManager.LoadScene("Game"); 
+        SceneManager.LoadScene("Game");
     }
 
     public void OpenSettings()

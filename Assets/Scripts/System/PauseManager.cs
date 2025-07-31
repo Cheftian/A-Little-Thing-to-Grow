@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Rendering; // Diperlukan jika menggunakan metode blur canggih
 using UnityEngine.Rendering.Universal; // Diperlukan jika menggunakan URP
+using UnityEngine.SceneManagement;
 
 public class PauseManager : MonoBehaviour
 {
@@ -57,7 +58,7 @@ public class PauseManager : MonoBehaviour
         // Tampilkan UI
         pausePanel.SetActive(true);
         // backgroundBlurPanel.SetActive(true); // Untuk metode sederhana
-        
+
         // --- (Opsional) Aktifkan Blur Canggih ---
         // if (dof != null) { dof.active = true; }
         // -----------------------------------------
@@ -76,5 +77,14 @@ public class PauseManager : MonoBehaviour
         // --- (Opsional) Nonaktifkan Blur Canggih ---
         // if (dof != null) { dof.active = false; }
         // ------------------------------------------
+    }
+
+    public void ExitToMainMenu(string sceneName)
+    {
+        // 1. Kembalikan waktu ke kecepatan normal SEBELUM pindah scene
+        Time.timeScale = 1f;
+        pausePanel.SetActive(false);
+        // 2. Muat scene Main Menu
+        SceneManager.LoadScene(sceneName);
     }
 }
