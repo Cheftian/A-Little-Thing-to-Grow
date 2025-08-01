@@ -3,10 +3,10 @@ using UnityEngine.SceneManagement;
 
 public class MenuNavigator : MonoBehaviour
 {
-    
     public void PlayGame()
     {
-        SceneManager.LoadScene("Game");
+        SceneLoader.sceneToLoad = "Game";
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void OpenSettings()

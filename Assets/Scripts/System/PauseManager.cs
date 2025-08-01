@@ -94,6 +94,7 @@ public class PauseManager : MonoBehaviour
     public void ExitToMainMenu(string sceneName)
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(sceneName);
+        SceneLoader.sceneToLoad = "MainMenu";
+        SceneManager.LoadScene("LoadingScene");
     }
 }

@@ -105,6 +105,7 @@
     <Compile Include="Assets\Scripts\Objects\PickupableItem.cs" />
     <Compile Include="Assets\Scripts\Projectile\GroundHitEffect.cs" />
     <Compile Include="Assets\Scripts\Projectile\GroundHitEffectEnemy.cs" />
+    <Compile Include="Assets\Scripts\System\SceneLoader.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextConsoleSimulator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TeleType.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventCheck.cs" />
