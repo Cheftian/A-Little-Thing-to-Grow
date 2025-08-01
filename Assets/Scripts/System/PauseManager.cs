@@ -1,41 +1,45 @@
 using UnityEngine;
-using UnityEngine.Rendering; // Diperlukan jika menggunakan metode blur canggih
-using UnityEngine.Rendering.Universal; // Diperlukan jika menggunakan URP
 using UnityEngine.SceneManagement;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 public class PauseManager : MonoBehaviour
 {
     [Header("Referensi UI")]
     [Tooltip("Panel utama yang berisi tombol-tombol pause.")]
     [SerializeField] private GameObject pausePanel;
-    [Tooltip("Panel gelap/blur yang akan menutupi layar di belakang.")]
-    // [SerializeField] private GameObject backgroundBlurPanel; // Untuk metode sederhana
+    [Tooltip("Panel HUD yang aktif saat bermain (berisi jumlah bawang, keranjang, dll.).")]
+    [SerializeField] private GameObject inGameHudPanel; // <-- VARIABEL BARU DI SINI
 
-    // --- (Opsional) Untuk Metode Blur Canggih ---
-    [Header("Efek Blur Profesional (Opsional)")]
-    // [SerializeField] private Volume postProcessVolume; 
-    // private DepthOfField dof;
-    // ---------------------------------------------
+    [Header("Efek Blur (URP)")]
+    [Tooltip("Seret objek 'Global Volume' yang ada di scene ke sini.")]
+    [SerializeField] private Volume postProcessVolume;
 
+    private DepthOfField depthOfField;
     private bool isPaused = false;
 
     void Start()
     {
-        // Pastikan semuanya disembunyikan di awal
+        NarrationManager.Instance.ShowNarration(0);
+        // Pastikan panel pause nonaktif dan HUD game aktif di awal
         pausePanel.SetActive(false);
-        // backgroundBlurPanel.SetActive(false); // Untuk metode sederhana
-
-        // --- (Opsional) Setup untuk Metode Blur Canggih ---
-        // if (postProcessVolume != null)
+        if (inGameHudPanel != null)
         {
-            // postProcessVolume.profile.TryGet(out dof);
+            inGameHudPanel.SetActive(true);
         }
-        // ---------------------------------------------
+
+        if (postProcessVolume != null)
+        {
+            postProcessVolume.profile.TryGet(out depthOfField);
+            if (depthOfField != null)
+            {
+                depthOfField.active = false;
+            }
+        }
     }
 
     void Update()
     {
-        // Dengarkan input tombol Escape
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
@@ -52,39 +56,44 @@ public class PauseManager : MonoBehaviour
     public void PauseGame()
     {
         isPaused = true;
-        // Menghentikan semua pergerakan dan animasi berbasis waktu
         Time.timeScale = 0f;
-
-        // Tampilkan UI
         pausePanel.SetActive(true);
-        // backgroundBlurPanel.SetActive(true); // Untuk metode sederhana
+        
+        // --- SEMBUNYIKAN HUD SAAT PAUSE ---
+        if (inGameHudPanel != null)
+        {
+            inGameHudPanel.SetActive(false);
+        }
 
-        // --- (Opsional) Aktifkan Blur Canggih ---
-        // if (dof != null) { dof.active = true; }
-        // -----------------------------------------
+        // Aktifkan efek blur
+        if (depthOfField != null)
+        {
+            depthOfField.active = true;
+        }
     }
 
     public void ResumeGame()
     {
         isPaused = false;
-        // Kembalikan waktu ke kecepatan normal
         Time.timeScale = 1f;
-
-        // Sembunyikan UI
         pausePanel.SetActive(false);
-        // backgroundBlurPanel.SetActive(false); // Untuk metode sederhana
 
-        // --- (Opsional) Nonaktifkan Blur Canggih ---
-        // if (dof != null) { dof.active = false; }
-        // ------------------------------------------
+        // --- TAMPILKAN KEMBALI HUD SAAT RESUME ---
+        if (inGameHudPanel != null)
+        {
+            inGameHudPanel.SetActive(true);
+        }
+
+        // Nonaktifkan efek blur
+        if (depthOfField != null)
+        {
+            depthOfField.active = false;
+        }
     }
 
     public void ExitToMainMenu(string sceneName)
     {
-        // 1. Kembalikan waktu ke kecepatan normal SEBELUM pindah scene
         Time.timeScale = 1f;
-        pausePanel.SetActive(false);
-        // 2. Muat scene Main Menu
         SceneManager.LoadScene(sceneName);
     }
 }

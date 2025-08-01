@@ -75,7 +75,7 @@ public class CameraController : MonoBehaviour
         if (!isFollowingPlayer) return;
         if (player == null) return;
         
-        Vector3 desiredPosition = player.position + offset;
+        Vector3 desiredPosition = player.position + offset + (Vector3)manualOffset;
         desiredPosition.z = transform.position.z;
         
         // Batasi posisi

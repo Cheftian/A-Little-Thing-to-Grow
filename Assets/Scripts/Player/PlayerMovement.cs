@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -30,54 +32,59 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerHealth playerHealth;
 
+    private GameObject currentOneWayPlatform;
+    private float distanceMoved = 0f;
+    private Vector3 lastPosition;
+    private float idleTimerOnLeaf = 0f;
+    private bool cameraGuideShown = false;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         playerHealth = GetComponent<PlayerHealth>();
         extraJumps = extraJumpsValue;
+        
+        lastPosition = transform.position;
     }
 
     void Update()
     {
-        // --- INPUT SPESIFIK A/D ---
-        // Pengecekan input diubah untuk hanya mendeteksi tombol A dan D
-        if (Input.GetKey(KeyCode.D))
-        {
-            moveDirection = 1f; // Bergerak ke kanan
-        }
-        else if (Input.GetKey(KeyCode.A))
-        {
-            moveDirection = -1f; // Bergerak ke kiri
-        }
-        else
-        {
-            moveDirection = 0f; // Diam jika tidak ada tombol yang ditekan
-        }
+        // Input Gerakan
+        if (Input.GetKey(KeyCode.D)) { moveDirection = 1f; }
+        else if (Input.GetKey(KeyCode.A)) { moveDirection = -1f; }
+        else { moveDirection = 0f; }
 
-        // --- LOGIKA LOMPAT & FLIP (SAMA SEPERTI SEBELUMNYA) ---
+        // Cek Pijakan
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
         if (isGrounded)
         {
             extraJumps = extraJumpsValue;
         }
 
-        if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W)) && !isAiming)
+        // Logika Lompat
+        // Tambahkan "!Input.GetKey(KeyCode.S)" di akhir kondisi
+        if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W)) && !isAiming && !Input.GetKey(KeyCode.S))
         {
-            if (isGrounded)
+            if (isGrounded || extraJumps > 0)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-            }
-            else if (extraJumps > 0)
-            {
-                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-                extraJumps--;
+                if (!isGrounded) extraJumps--;
             }
         }
-
+        
         CheckForStomp();
+        CheckDropDown();
 
-        // Kondisi if yang sebelumnya ada di dalam Flip(), sekarang diletakkan di sini
+        // Cek perpindahan untuk guide kamera
+        distanceMoved += Vector3.Distance(transform.position, lastPosition);
+        lastPosition = transform.position;
+
+        if (distanceMoved > 10f && !cameraGuideShown)
+        {
+            if(GuideManager.Instance != null) GuideManager.Instance.ShowTimedGuide(GuideType.Camera);
+            cameraGuideShown = true;
+        }
+        
+        // Membalik karakter berdasarkan input gerakan
         if ((isFacingRight && moveDirection < 0f) || (!isFacingRight && moveDirection > 0f))
         {
             Flip();
@@ -88,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
     {
         float currentSpeed = isAiming ? moveSpeed * aimingSpeedMultiplier : moveSpeed;
         rb.linearVelocity = new Vector2(moveDirection * currentSpeed, rb.linearVelocity.y);
+        CheckDropDownGuide();
     }
     public void Flip()
     {
@@ -109,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isAiming = aiming;
     }
-    
+
     private void CheckForStomp()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheck.position, groundCheckRadius);
@@ -136,11 +144,64 @@ public class PlayerMovement : MonoBehaviour
                             rb.linearVelocity = new Vector2(rb.linearVelocity.x, stompBounceForce); // Player tetap memantul ke atas
                             break;
                     }
-                    
+
                     // Hentikan loop agar tidak memproses lebih dari satu ulat per frame
-                    return; 
+                    return;
                 }
             }
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("OneWayPlatform"))
+        {
+            currentOneWayPlatform = collision.gameObject;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("OneWayPlatform"))
+        {
+            currentOneWayPlatform = null;
+        }
+    }
+    
+    private void CheckDropDown()
+    {
+        if (Input.GetKey(KeyCode.S) && Input.GetButtonDown("Jump"))
+        {
+            StartCoroutine(DisableCollision());
+        }
+    }
+
+    private IEnumerator DisableCollision()
+    {
+        if (currentOneWayPlatform != null)
+        {
+            Collider2D platformCollider = currentOneWayPlatform.GetComponent<Collider2D>();
+            Collider2D playerCollider = GetComponent<Collider2D>();
+            Physics2D.IgnoreCollision(playerCollider, platformCollider);
+            yield return new WaitForSeconds(0.25f);
+            Physics2D.IgnoreCollision(playerCollider, platformCollider, false);
+        }
+    }
+
+    private void CheckDropDownGuide()
+    {
+        if (currentOneWayPlatform != null && rb.linearVelocity.magnitude < 0.1f)
+        {
+            idleTimerOnLeaf += Time.fixedDeltaTime;
+            if (idleTimerOnLeaf > 2f)
+            {
+                if (GuideManager.Instance != null) GuideManager.Instance.ShowSituationalGuide(GuideType.DropDown);
+            }
+        }
+        else
+        {
+            idleTimerOnLeaf = 0f;
+            if (GuideManager.Instance != null) GuideManager.Instance.HideSituationalGuide(GuideType.DropDown);
         }
     }
 }

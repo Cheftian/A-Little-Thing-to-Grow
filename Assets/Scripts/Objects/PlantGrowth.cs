@@ -45,6 +45,12 @@ public class PlantGrowth : MonoBehaviour
         }
     }
 
+    public bool IsReadyForFirstGrowth()
+    {
+        // Akan mengembalikan 'true' hanya jika ini adalah interaksi pertama (stage = -1)
+        return currentStage == -1;
+    }
+
     public bool ApplyWater()
     {
         if (isWatered || isGrowing) return false;
@@ -110,7 +116,7 @@ public class PlantGrowth : MonoBehaviour
         isGrowing = false;
     }
 
-    private void GoToNextStage()
+   private void GoToNextStage()
     {
         if (currentStage >= growthStages.Count - 1) return;
 
@@ -118,6 +124,21 @@ public class PlantGrowth : MonoBehaviour
         UpdateVisualsToPrepare();
         isWatered = false;
         isFertilized = false;
+
+        // --- LOGIKA BARU UNTUK MEMANGGIL NARASI ---
+        // Jika ini adalah pertumbuhan pertama (menuju Tahap 0 dari -1)
+        if (currentStage == 0)
+        {
+            // Tampilkan narasi index 2
+            GuideManager.Instance.ShowTimedGuide(GuideType.Jump);
+            NarrationManager.Instance.ShowNarration(2);
+        }
+        // Jika tanaman tumbuh ke Tahap 3a (dari tahap 2)
+        else if (currentStage == 2)
+        {
+            // Tampilkan narasi index 5
+            NarrationManager.Instance.ShowNarration(5);
+        }
     }
     
     // --- PERUBAHAN UTAMA ADA DI SINI ---

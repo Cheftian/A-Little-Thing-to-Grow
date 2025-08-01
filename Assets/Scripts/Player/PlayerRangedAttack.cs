@@ -163,6 +163,7 @@ public class PlayerRangedAttack : MonoBehaviour
     public void AddAmmo(int amount)
     {
         currentAmmo += amount;
+        GuideManager.Instance.ShowTimedGuide(GuideType.Aim);
         // Batasi agar tidak melebihi kapasitas maksimal
         if (currentAmmo > maxAmmo)
         {

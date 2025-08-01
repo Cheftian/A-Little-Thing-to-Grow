@@ -28,34 +28,65 @@ public class PlayerInteraction : MonoBehaviour
     void Start()
     {
         playerMovement = GetComponent<PlayerMovement>();
+        if(GuideManager.Instance != null) GuideManager.Instance.ShowTimedGuide(GuideType.Move);
     }
 
     void Update()
     {
-        // Mendeteksi objek terdekat yang bisa diajak interaksi
         Collider2D nearbyObject = Physics2D.OverlapCircle(transform.position, interactionRadius, interactableLayer);
 
-        if (nearbyObject != null && Input.GetKey(KeyCode.F))
+        // 1. Tentukan apakah ada interaksi yang valid saat ini
+        bool canInteract = false;
+        if (nearbyObject != null)
         {
-            // Mulai/lanjutkan interaksi
+            PickupableItem item = nearbyObject.GetComponent<PickupableItem>();
+            PlantGrowth plant = nearbyObject.GetComponent<PlantGrowth>();
+
+            // Aturan untuk mengambil item
+            if (item != null && currentHeldItem == HeldItemType.None)
+            {
+                canInteract = true;
+            }
+            // Aturan untuk berinteraksi dengan tanaman
+            else if (plant != null)
+            {
+                // Bisa interaksi jika membawa sesuatu ATAU jika ini adalah penanaman pertama
+                if (currentHeldItem != HeldItemType.None || plant.IsReadyForFirstGrowth())
+                {
+                    canInteract = true;
+                }
+            }
+        }
+
+        // 2. Tampilkan atau sembunyikan guide berdasarkan kondisi
+        if (canInteract && !isInteracting)
+        {
+            if(GuideManager.Instance != null) GuideManager.Instance.ShowSituationalGuide(GuideType.Interact);
+        }
+        else
+        {
+            if(GuideManager.Instance != null) GuideManager.Instance.HideSituationalGuide(GuideType.Interact);
+        }
+
+        // 3. Jalankan logika interaksi jika valid dan tombol F ditekan
+        if (canInteract && Input.GetKey(KeyCode.F))
+        {
             isInteracting = true;
             interactionProgress += Time.deltaTime;
-            playerMovement.SetAimingState(true); // Meminjam state aiming untuk menghentikan gerakan
+            playerMovement.SetAimingState(true); 
             
-            // Kirim sinyal ke progress bar
             OnInteractionProgress?.Invoke(interactionProgress / interactionDuration);
             OnInteractionStateChanged?.Invoke(true);
 
-            // Jika progres sudah penuh
             if (interactionProgress >= interactionDuration)
             {
                 PerformInteraction(nearbyObject.gameObject);
                 ResetInteraction();
             }
         }
-        else if (Input.GetKeyUp(KeyCode.F) || nearbyObject == null)
+        else if (Input.GetKeyUp(KeyCode.F) || !canInteract)
         {
-            // Batalkan interaksi jika tombol F dilepas atau menjauh
+            // Reset jika tombol dilepas atau jika interaksi tidak lagi valid
             if(isInteracting) ResetInteraction();
         }
     }
@@ -115,6 +146,7 @@ public class PlayerInteraction : MonoBehaviour
         interactionProgress = 0f;
         playerMovement.SetAimingState(false); // Kembalikan kecepatan gerak normal
         OnInteractionStateChanged?.Invoke(false);
+        GuideManager.Instance.HideSituationalGuide(GuideType.Interact);
     }
 
     private void OnDrawGizmosSelected()
