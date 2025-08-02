@@ -30,6 +30,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float stompBounceForce = 14f; // Kekuatan pantulan setelah menginjak
     private bool isGrounded;
 
+    [Header("Deteksi Tembok")]
+    [SerializeField] private Transform wallCheck;
+    [SerializeField] private float wallCheckDistance = 0.1f;
+    [SerializeField] private LayerMask wallLayer;
+    private bool isTouchingWall;
+
     private PlayerHealth playerHealth;
 
     private GameObject currentOneWayPlatform;
@@ -37,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 lastPosition;
     private float idleTimerOnLeaf = 0f;
     private bool cameraGuideShown = false;
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -48,6 +55,9 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        //Cek Tembok
+        isTouchingWall = Physics2D.Raycast(wallCheck.position, Vector2.right * transform.localScale.x, wallCheckDistance, wallLayer);
+
         // Input Gerakan
         if (Input.GetKey(KeyCode.D)) { moveDirection = 1f; }
         else if (Input.GetKey(KeyCode.A)) { moveDirection = -1f; }
@@ -94,9 +104,15 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         float currentSpeed = isAiming ? moveSpeed * aimingSpeedMultiplier : moveSpeed;
-        rb.linearVelocity = new Vector2(moveDirection * currentSpeed, rb.linearVelocity.y);
-        CheckDropDownGuide();
+        float xVelocity = moveDirection * currentSpeed;
+
+        // Kalau nabrak dinding ke arah gerakan, set X ke 0
+        if ((moveDirection > 0 && isTouchingWall) || (moveDirection < 0 && isTouchingWall))
+            xVelocity = 0f;
+
+        rb.linearVelocity = new Vector2(xVelocity, rb.linearVelocity.y);
     }
+    
     public void Flip()
     {
         // Fungsi ini sekarang murni hanya untuk membalikkan badan

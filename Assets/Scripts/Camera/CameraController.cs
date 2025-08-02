@@ -51,7 +51,7 @@ public class CameraController : MonoBehaviour
 
     void Update()
     {
-        Vector2 panInput = Vector2.zero;
+        Vector2 panInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         if (Input.GetKey(KeyCode.RightArrow)) panInput.x = 1;
         if (Input.GetKey(KeyCode.LeftArrow)) panInput.x = -1;
         if (Input.GetKey(KeyCode.UpArrow)) panInput.y = 1;

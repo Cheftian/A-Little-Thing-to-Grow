@@ -6,6 +6,8 @@ public class UlatDaratBehaviour : MonoBehaviour
   // Menambahkan state baru: Idle
     private enum State { Patrol, Chase, Idle }
     private State currentState;
+    [SerializeField] private WormType wormType;
+    private enum WormType { Hijau, Coklat, Biru }
 
     [Header("Referensi")]
     private Transform playerTransform;
@@ -18,6 +20,9 @@ public class UlatDaratBehaviour : MonoBehaviour
     [SerializeField] private float detectionRadius = 8f;
     [Tooltip("Berapa lama ulat diam sebelum kembali patroli.")]
     [SerializeField] private float idleDuration = 2f; // Waktu untuk diam
+    private float currentSpeed = 0f; // Tambahkan di atas bersama variabel lain
+    [SerializeField] private float smoothTime = 0.2f; // Tambahkan ini untuk pengaturan kehalusan
+    private float velocityXSmoothing = 0f;
 
     // Komponen & Variabel Internal
     private Rigidbody2D rb;
@@ -36,53 +41,54 @@ public class UlatDaratBehaviour : MonoBehaviour
         }
         else
         {
-            // Pesan error jika Player dengan tag "Player" tidak ditemukan
             Debug.LogError("Objek Player dengan tag 'Player' tidak ditemukan di scene!");
         }
 
-        currentState = State.Patrol; // Mulai dengan patroli
+        currentState = (wormType == WormType.Biru) ? State.Idle : State.Patrol;
     }
 
     void Update()
     {
+    if (wormType != WormType.Biru)
         HandleStateTransitions();
 
-        switch (currentState)
-        {
-            case State.Patrol:
+    switch (currentState)
+    {
+        case State.Patrol:
+            if (wormType != WormType.Biru)
                 Patrol();
-                break;
-            case State.Chase:
+            break;
+        case State.Chase:
+            if (wormType != WormType.Biru)
                 Chase();
-                break;
-            case State.Idle:
-                Idle();
-                break;
-        }
+            break;
+        case State.Idle:
+            if (wormType == WormType.Biru)
+                Idle(); // hanya ulat biru yang idle
+            break;
+    }
 
+    if (wormType != WormType.Biru)
         Flip();
     }
 
     // --- LOGIKA UTAMA ADA DI SINI ---
     private void HandleStateTransitions()
     {
-        if (playerTransform == null) return;
+        if (playerTransform == null || wormType == WormType.Biru) return;
 
         float distanceToPlayer = Vector2.Distance(transform.position, playerTransform.position);
 
-        // Jika player terdeteksi
         if (distanceToPlayer <= detectionRadius)
         {
             currentState = State.Chase;
         }
-        // Jika player tidak terdeteksi
         else
         {
-            // Jika sebelumnya sedang mengejar, sekarang berhenti (Idle)
             if (currentState == State.Chase)
             {
-                currentState = State.Idle;
-                idleTimer = 0; // Mulai hitung waktu diam
+                // Player kabur, kembali ke patroli
+                currentState = State.Patrol;
             }
         }
     }
@@ -99,15 +105,33 @@ public class UlatDaratBehaviour : MonoBehaviour
 
     private void Chase()
     {
-        if (transform.position.x < playerTransform.position.x)
+        // === CEK APAKAH MASIH ADA TANAH DI DEPAN ===
+        RaycastHit2D groundInfo = Physics2D.Raycast(groundCheck.position, Vector2.down, 1f, groundLayer);
+        if (!groundInfo.collider)
         {
-            moveDirection = 1;
+            // Kalau tanah habis, berhenti mengejar dan balik
+            TurnAround();
+            currentState = State.Patrol;
+            return;
+        }
+
+        float deltaX = playerTransform.position.x - transform.position.x;
+        float deadZoneThreshold = 0.2f;
+
+        // Jika terlalu dekat, berhenti
+        if (Mathf.Abs(deltaX) < deadZoneThreshold)
+        {
+            currentSpeed = Mathf.SmoothDamp(currentSpeed, 0, ref velocityXSmoothing, smoothTime);
         }
         else
         {
-            moveDirection = -1;
+            float targetSpeed = chaseSpeed * Mathf.Sign(deltaX); // Tentukan arah dengan halus
+            currentSpeed = Mathf.SmoothDamp(currentSpeed, targetSpeed, ref velocityXSmoothing, smoothTime);
+
+            moveDirection = deltaX > 0 ? 1 : -1;
         }
-        rb.linearVelocity = new Vector2(chaseSpeed * moveDirection, rb.linearVelocity.y);
+
+        rb.linearVelocity = new Vector2(currentSpeed, rb.linearVelocity.y);
     }
 
     private void Idle()
