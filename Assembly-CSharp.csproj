@@ -75,6 +75,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
     <Compile Include="Assets\Scripts\System\NarrationManager.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerMovement.cs" />
+    <Compile Include="Assets\CutsceneManager.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\System\GuideManager.cs" />
     <Compile Include="Assets\Scripts\System\VolumeSettings.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ObjectSpin.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_PhoneNumberValidator.cs" />
     <Compile Include="Assets\Scripts\System\EndingTrigger.cs" />
+    <Compile Include="Assets\Scripts\System\ButtonSfx.cs" />
     <Compile Include="Assets\Scripts\Objects\PlantGrowth.cs" />
     <Compile Include="Assets\Scripts\Objects\PickupableItem.cs" />
     <Compile Include="Assets\Scripts\Projectile\GroundHitEffect.cs" />

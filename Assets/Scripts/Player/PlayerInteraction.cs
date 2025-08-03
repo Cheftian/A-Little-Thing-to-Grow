@@ -41,6 +41,8 @@ public class PlayerInteraction : MonoBehaviour
         {
             PickupableItem item = nearbyObject.GetComponent<PickupableItem>();
             PlantGrowth plant = nearbyObject.GetComponent<PlantGrowth>();
+            EndingTrigger endTrigger = nearbyObject.GetComponent<EndingTrigger>(); // Dapatkan komponennya di sini
+
 
             // Aturan untuk mengambil item
             if (item != null && currentHeldItem == HeldItemType.None)
@@ -55,6 +57,10 @@ public class PlayerInteraction : MonoBehaviour
                 {
                     canInteract = true;
                 }
+            }
+            else if (endTrigger != null)
+            {
+                canInteract = true;
             }
         }
 

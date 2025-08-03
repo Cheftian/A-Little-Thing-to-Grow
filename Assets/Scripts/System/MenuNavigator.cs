@@ -5,7 +5,7 @@ public class MenuNavigator : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneLoader.sceneToLoad = "Game";
+        SceneLoader.sceneToLoad = "Prologue";
         SceneManager.LoadScene("LoadingScene");
     }
 
@@ -16,7 +16,8 @@ public class MenuNavigator : MonoBehaviour
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("MainMenu");
+        SceneLoader.sceneToLoad = "MainMenu";
+        SceneManager.LoadScene("LoadingScene");
     }
 
     public void OpenCredits()
