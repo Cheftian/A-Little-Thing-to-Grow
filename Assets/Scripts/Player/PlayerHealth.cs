@@ -113,7 +113,9 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
+        AudioManager.Instance.PlaySFX("PlayerDeath");
         Debug.Log("Player Telah Kalah!");
+        AudioManager.Instance.PlaySFX("GameOver");
         SceneManager.LoadScene("MainMenu");
     }
 }

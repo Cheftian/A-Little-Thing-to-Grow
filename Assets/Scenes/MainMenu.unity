@@ -861,6 +861,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1880747117}
+        m_TargetAssemblyTypeName: ButtonSfx, Assembly-CSharp
+        m_MethodName: PlayClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &918742860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1074,7 +1086,7 @@ AudioSource:
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1171,7 +1183,37 @@ MonoBehaviour:
   bgmSounds:
   - name: MainMenu
     clip: {fileID: 8300000, guid: 72ae44caf8145024e8f9e4f2e028fdc0, type: 3}
-  sfxSounds: []
+  sfxSounds:
+  - name: Button
+    clip: {fileID: 8300000, guid: 90f38ba908d06704da8e2c6818ad6a0e, type: 3}
+  - name: PlantGrow
+    clip: {fileID: 8300000, guid: a8fa5ef435487e1468eb81f42691ce01, type: 3}
+  - name: RunDaun
+    clip: {fileID: 8300000, guid: 26dd270e1762b0842ade74a4932e679c, type: 3}
+  - name: RunGround
+    clip: {fileID: 8300000, guid: 83138eacbde32374abf90cbece90e2a9, type: 3}
+  - name: Jump
+    clip: {fileID: 8300000, guid: 612d31ed035f79d44a3818fcd93a85ea, type: 3}
+  - name: Mupuk
+    clip: {fileID: 8300000, guid: fd2fc7b54b65de940af10eb81ae33dcc, type: 3}
+  - name: Nyiram
+    clip: {fileID: 8300000, guid: dc852c13ade542344b3883598a557c6a, type: 3}
+  - name: Throw
+    clip: {fileID: 8300000, guid: 898d4bddcb546ef47a3b78e5d9bb1eb7, type: 3}
+  - name: AmbilAir
+    clip: {fileID: 8300000, guid: 5df84afba73efd0438422e4b3e8f82bc, type: 3}
+  - name: ThrowEnemy
+    clip: {fileID: 8300000, guid: 97e86ab57a3849e47a52db224533e4bc, type: 3}
+  - name: ProjectileEnemy
+    clip: {fileID: 8300000, guid: cdc938a75b176164bb1321673868589d, type: 3}
+  - name: ProjectileLand
+    clip: {fileID: 8300000, guid: f9986a905f370c548a8206285636a987, type: 3}
+  - name: EnemyDeath
+    clip: {fileID: 8300000, guid: dd70ef210b3185146959390a6b1b1d0a, type: 3}
+  - name: PlayerDeath
+    clip: {fileID: 8300000, guid: 667bdf56a5aad604f9bdd949f31c96a2, type: 3}
+  - name: GameOver
+    clip: {fileID: 8300000, guid: 5243235da74c0084796e17256ff7c735, type: 3}
   bgmSource: {fileID: 1303515415}
   sfxSource: {fileID: 1303515414}
 --- !u!4 &1303515417
@@ -1281,6 +1323,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1880747117}
+        m_TargetAssemblyTypeName: ButtonSfx, Assembly-CSharp
+        m_MethodName: PlayClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1613531803
@@ -1415,6 +1469,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1880747117}
+        m_TargetAssemblyTypeName: ButtonSfx, Assembly-CSharp
+        m_MethodName: PlayClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1781894604
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1453,6 +1519,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1781894601}
   m_CullTransparentMesh: 1
+--- !u!1 &1880747116
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1880747118}
+  - component: {fileID: 1880747117}
+  m_Layer: 0
+  m_Name: ButtonSfx
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1880747117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880747116}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35a892bd51ab05643bca9f4352df7067, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1880747118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1880747116}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 310, y: 665.21027, z: -6.900052}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2027425527
 GameObject:
   m_ObjectHideFlags: 0
@@ -1545,6 +1655,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1880747117}
+        m_TargetAssemblyTypeName: ButtonSfx, Assembly-CSharp
+        m_MethodName: PlayClickSfx
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Button
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &2027425530
@@ -1741,3 +1863,4 @@ SceneRoots:
   - {fileID: 556609715}
   - {fileID: 1303515417}
   - {fileID: 2096516101}
+  - {fileID: 1880747118}

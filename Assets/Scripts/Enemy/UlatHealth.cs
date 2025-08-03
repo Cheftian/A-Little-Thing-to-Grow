@@ -87,6 +87,7 @@ public class UlatHealth : MonoBehaviour
             }
         }
         
+        AudioManager.Instance.PlaySFX("EnemyDeath");
         // Hancurkan objek ulat
         Destroy(gameObject);
     }

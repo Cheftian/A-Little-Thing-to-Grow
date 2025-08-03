@@ -31,6 +31,7 @@ public class EnemyProjectile : MonoBehaviour
             playerHealth.TakeDamage(damageAmount, transform);
         }
 
+        AudioManager.Instance.PlaySFX("ProjectileEnemy");
         // Langsung hancurkan proyektil setelah mengenai APA PUN
         Destroy(gameObject);
     }

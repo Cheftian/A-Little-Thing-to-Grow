@@ -67,6 +67,8 @@ public class UlatUdaraAttack : MonoBehaviour
 
     private void Shoot()
     {
+        AudioManager.Instance.PlaySFX("ThrowEnemy");
+
         // Membuat proyektil
         GameObject projectile = Instantiate(projectilePrefab, launchPoint.position, Quaternion.identity);
         Rigidbody2D rb = projectile.GetComponent<Rigidbody2D>();

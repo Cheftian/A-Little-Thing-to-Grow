@@ -131,6 +131,10 @@ public class PlayerRangedAttack : MonoBehaviour
 
     private void Fire()
     {
+        if (currentAmmo > 0 && isAiming) {
+            AudioManager.Instance.PlaySFX("Throw");
+        }
+        
         // --- CEK AMUNISI SEBELUM MENEMBAK ---
         if (currentAmmo <= 0)
         {

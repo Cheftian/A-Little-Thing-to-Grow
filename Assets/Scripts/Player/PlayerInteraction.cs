@@ -100,6 +100,11 @@ public class PlayerInteraction : MonoBehaviour
 
         if (item != null && currentHeldItem == HeldItemType.None) // Mengambil item
         {
+            if (item.itemType == HeldItemType.Water)
+            {
+                AudioManager.Instance.PlaySFX("Nyiram");
+            }
+
             currentHeldItem = item.itemType;
             OnHeldItemChanged?.Invoke(currentHeldItem);
             if (item.itemType != HeldItemType.Water)

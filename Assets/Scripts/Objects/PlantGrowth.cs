@@ -53,7 +53,8 @@ public class PlantGrowth : MonoBehaviour
 
     public bool ApplyWater()
     {
-        if (isWatered || isGrowing) return false;
+        if (isGrowing) return false;
+        AudioManager.Instance.PlaySFX("Nyiram");
         isWatered = true;
         Debug.Log("Tanaman disiram!");
         CheckConditionsAndGrow();
@@ -63,6 +64,7 @@ public class PlantGrowth : MonoBehaviour
     public bool ApplyFertilizer()
     {
         if (isFertilized || isGrowing) return false;
+        AudioManager.Instance.PlaySFX("Mupuk");
         isFertilized = true;
         Debug.Log("Tanaman dipupuk!");
         CheckConditionsAndGrow();
@@ -99,6 +101,8 @@ public class PlantGrowth : MonoBehaviour
 
         // Siapkan stage berikutnya, termasuk SEMUA daun dari tahap sebelumnya
         GoToNextStage();
+
+        AudioManager.Instance.PlaySFX("PlantGrow");
 
         mainCamera.TriggerShake(shakeDuration, shakeMagnitude);
         yield return new WaitForSeconds(shakeDuration);

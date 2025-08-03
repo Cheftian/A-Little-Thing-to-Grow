@@ -39,6 +39,7 @@ public class Projectile : MonoBehaviour
             ulat.TakeDamage(damageAmount, owner);
         }
         
+        AudioManager.Instance.PlaySFX("ProjectileLand");
         // Langsung hancurkan proyektil setelah mengenai APA PUN (ulat, tanah, dinding, dll.)
         Destroy(gameObject);
     }
