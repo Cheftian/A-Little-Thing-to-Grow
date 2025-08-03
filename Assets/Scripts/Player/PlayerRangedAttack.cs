@@ -131,7 +131,9 @@ public class PlayerRangedAttack : MonoBehaviour
 
     private void Fire()
     {
-        if (currentAmmo > 0 && isAiming) {
+        playerMovement.TriggerThrowSprite();
+        if (currentAmmo > 0 && isAiming)
+        {
             AudioManager.Instance.PlaySFX("Throw");
         }
         

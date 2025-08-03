@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     private float moveDirection;
     public bool isFacingRight = true;
     private bool isAiming = false;
+    private bool isInteracting = false; 
     [SerializeField] private float aimingSpeedMultiplier = 0.3f;
     [Header("Pengaturan Gerakan")]
     [SerializeField] private float moveSpeed = 8f;
@@ -28,6 +29,26 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform wallCheck;
     [SerializeField] private float wallCheckDistance = 0.1f;
     [SerializeField] private LayerMask wallLayer;
+
+    [Header("Referensi Komponen")]
+    [SerializeField] private Animator anim;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    [Header("Pengaturan Sprite (Manual)")]
+    [Tooltip("Sprite saat karakter di udara (melompat ke atas).")]
+    [SerializeField] private Sprite jumpSprite;
+    [Tooltip("Sprite saat karakter di udara (jatuh ke bawah).")]
+    [SerializeField] private Sprite fallSprite;
+    [Tooltip("Sprite saat karakter jongkok untuk turun dari platform.")]
+    [SerializeField] private Sprite crouchSprite;
+    [Tooltip("Sprite saat karakter melakukan double jump.")]
+    [SerializeField] private Sprite doubleJumpSprite;
+    [Tooltip("Seret objek GameObject bayangan yang ada di bawah Player ke sini.")]
+    [SerializeField] private GameObject shadowObject;
+    [SerializeField] private Sprite aimSprite;
+    [SerializeField] private Sprite throwSprite;
+    [SerializeField] private float throwSpriteDuration = 0.2f;
+
     private bool isTouchingWall;
     private PlayerHealth playerHealth;
     private GameObject currentOneWayPlatform;
@@ -35,6 +56,8 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 lastPosition;
     private float idleTimerOnLeaf = 0f;
     private bool cameraGuideShown = false;
+    private bool isThrowing = false;
+    private bool isDoubleJumping = false;
 
     // --- VARIABEL BARU UNTUK SUARA LANGKAH ---
     [Header("Pengaturan Suara Langkah")]
@@ -45,6 +68,10 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        // Ambil komponen Animator dan SpriteRenderer
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        
         playerHealth = GetComponent<PlayerHealth>();
         extraJumps = extraJumpsValue;
         lastPosition = transform.position;
@@ -59,9 +86,16 @@ public class PlayerMovement : MonoBehaviour
         else { moveDirection = 0f; }
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        if (shadowObject != null)
+        {
+            shadowObject.SetActive(isGrounded);
+        }
+
         if (isGrounded)
         {
             extraJumps = extraJumpsValue;
+            isDoubleJumping = false;
         }
 
         if ((Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W)) && !isAiming && !Input.GetKey(KeyCode.S))
@@ -71,7 +105,11 @@ public class PlayerMovement : MonoBehaviour
                 AudioManager.Instance.PlaySFX("Jump");
 
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-                if (!isGrounded) extraJumps--;
+                if (!isGrounded)
+                {
+                    extraJumps--;
+                    isDoubleJumping = true;
+                }
             }
         }
         CheckForStomp();
@@ -80,7 +118,7 @@ public class PlayerMovement : MonoBehaviour
         lastPosition = transform.position;
         if (distanceMoved > 10f && !cameraGuideShown)
         {
-            if(GuideManager.Instance != null) GuideManager.Instance.ShowTimedGuide(GuideType.Camera);
+            if (GuideManager.Instance != null) GuideManager.Instance.ShowTimedGuide(GuideType.Camera);
             cameraGuideShown = true;
         }
         if ((isFacingRight && moveDirection < 0f) || (!isFacingRight && moveDirection > 0f))
@@ -90,6 +128,62 @@ public class PlayerMovement : MonoBehaviour
 
         // --- PANGGIL FUNGSI BARU DI SINI ---
         HandleFootsteps();
+        UpdateAnimationState();
+    }
+
+    private void UpdateAnimationState()
+    {
+        bool isCrouching = Input.GetKey(KeyCode.S) && currentOneWayPlatform != null;
+
+        if (isThrowing)
+        {
+            anim.enabled = false;
+            spriteRenderer.sprite = throwSprite;
+            return;
+        }
+
+        if (isAiming)
+        {
+            anim.enabled = false;
+            spriteRenderer.sprite = aimSprite;
+            return;
+        }
+
+        if (isCrouching)
+        {
+            anim.enabled = false;
+            spriteRenderer.sprite = crouchSprite;
+        }
+        // PRIORITAS 2: DI UDARA
+        else if (!isGrounded)
+        {
+            anim.enabled = false;
+
+            // --- LOGIKA BARU UNTUK DOUBLE JUMP ---
+            // Cek dulu apakah sedang double jump
+            if (isDoubleJumping)
+            {
+                spriteRenderer.sprite = doubleJumpSprite;
+            }
+            // Jika tidak, baru cek kondisi naik atau turun
+            else
+            {
+                if (rb.linearVelocity.y > 0.1f)
+                {
+                    spriteRenderer.sprite = jumpSprite;
+                }
+                else if (rb.linearVelocity.y < -0.1f)
+                {
+                    spriteRenderer.sprite = fallSprite;
+                }
+            }
+        }
+        // PRIORITAS 3: DI DARAT (IDLE/RUN)
+        else
+        {
+            anim.enabled = true;
+            anim.SetFloat("xVelocity", Mathf.Abs(moveDirection));
+        }
     }
 
     private void FixedUpdate()
@@ -161,6 +255,21 @@ public class PlayerMovement : MonoBehaviour
     public void SetAimingState(bool aiming)
     {
         isAiming = aiming;
+    }
+
+    public void TriggerThrowSprite()
+    {
+        if (!isThrowing)
+        {
+            StartCoroutine(ThrowSpriteRoutine());
+        }
+    }
+
+    private IEnumerator ThrowSpriteRoutine()
+    {
+        isThrowing = true; // Aktifkan penanda melempar
+        yield return new WaitForSeconds(throwSpriteDuration); // Tunggu sesaat
+        isThrowing = false; // Nonaktifkan kembali penanda
     }
 
     private void CheckForStomp()

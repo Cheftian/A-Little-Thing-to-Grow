@@ -1182,7 +1182,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bgmSounds:
   - name: MainMenu
-    clip: {fileID: 8300000, guid: 72ae44caf8145024e8f9e4f2e028fdc0, type: 3}
+    clip: {fileID: 8300000, guid: 79030756831c47e469d77ab2d8330a45, type: 3}
+  - name: Loading
+    clip: {fileID: 8300000, guid: 36031a9f8d6957b408eb495d86520464, type: 3}
+  - name: Prologue
+    clip: {fileID: 8300000, guid: 1125d189914a87947bd1d39aa6b1fcc8, type: 3}
+  - name: InGame
+    clip: {fileID: 8300000, guid: 8041810802c2aec4f87e17bd1c40e606, type: 3}
+  - name: Epilogue
+    clip: {fileID: 8300000, guid: 395a5b5786e1b3d4995b39e65d0d06ab, type: 3}
   sfxSounds:
   - name: Button
     clip: {fileID: 8300000, guid: 90f38ba908d06704da8e2c6818ad6a0e, type: 3}
@@ -1736,6 +1744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8a9497b1454dca4cb17b204cae90ed3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgName: MainMenu
 --- !u!4 &2096516101
 Transform:
   m_ObjectHideFlags: 0

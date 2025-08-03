@@ -440,8 +440,7 @@ MonoBehaviour:
   narrationTextUI: {fileID: 436195101}
   cutsceneCanvasGroup: {fileID: 152474570}
   isEpilogue: 0
-  cutsceneAnimator: {fileID: 0}
-  endAnimationTrigger: PlayEndAnimation
+  endButton: {fileID: 0}
 --- !u!4 &399684324
 Transform:
   m_ObjectHideFlags: 0
@@ -593,6 +592,51 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 436195099}
   m_CullTransparentMesh: 1
+--- !u!1 &631219351
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 631219353}
+  - component: {fileID: 631219352}
+  m_Layer: 0
+  m_Name: MainMenuMusic
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &631219352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631219351}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8a9497b1454dca4cb17b204cae90ed3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bgName: Prologue
+--- !u!4 &631219353
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 631219351}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1046.4409, y: 504.70612, z: -6.0148087}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &897451081
 GameObject:
   m_ObjectHideFlags: 0
@@ -817,3 +861,4 @@ SceneRoots:
   - {fileID: 52709051}
   - {fileID: 1618976479}
   - {fileID: 399684324}
+  - {fileID: 631219353}
