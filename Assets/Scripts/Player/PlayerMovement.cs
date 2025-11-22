@@ -48,6 +48,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Sprite aimSprite;
     [SerializeField] private Sprite throwSprite;
     [SerializeField] private float throwSpriteDuration = 0.2f;
+    [SerializeField] private Sprite interactSprite;
 
     private bool isTouchingWall;
     private PlayerHealth playerHealth;
@@ -133,7 +134,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void UpdateAnimationState()
     {
-        bool isCrouching = Input.GetKey(KeyCode.S) && currentOneWayPlatform != null;
+        bool isCrouching = false;
+        // Hanya cek kondisi jongkok jika Player sedang di darat
+        if (isGrounded && Input.GetKey(KeyCode.S))
+        {
+            // Lakukan pengecekan pijakan saat ini secara langsung
+            Collider2D groundCollider = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+            if (groundCollider != null && groundCollider.CompareTag("OneWayPlatform"))
+            {
+                // Baru set jongkok jika memang benar sedang di atas daun
+                isCrouching = true;
+            }
+        }
 
         if (isThrowing)
         {
@@ -141,6 +153,13 @@ public class PlayerMovement : MonoBehaviour
             spriteRenderer.sprite = throwSprite;
             return;
         }
+        if (isInteracting)
+        {
+            anim.enabled = false;
+            spriteRenderer.sprite = interactSprite;
+            return; // Hentikan di sini
+        }
+
 
         if (isAiming)
         {
@@ -188,15 +207,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // ... (Fungsi FixedUpdate Anda tidak berubah) ...
-        float currentSpeed = isAiming ? moveSpeed * aimingSpeedMultiplier : moveSpeed;
+        float currentSpeed = (isAiming || isInteracting) ? moveSpeed * aimingSpeedMultiplier : moveSpeed;
         float xVelocity = moveDirection * currentSpeed;
         if ((moveDirection > 0 && isTouchingWall) || (moveDirection < 0 && isTouchingWall))
             xVelocity = 0f;
         rb.linearVelocity = new Vector2(xVelocity, rb.linearVelocity.y);
     }
     
-    // --- FUNGSI BARU UNTUK MENGATUR SUARA LANGKAH ---
+    public void SetInteractingState(bool interacting)
+    {
+        isInteracting = interacting;
+    }
+    
     private void HandleFootsteps()
     {
         // Cek jika karakter sedang di darat DAN sedang bergerak
@@ -212,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
 
                 // Deteksi ground di bawah kaki
                 Collider2D groundCollider = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-                
+
                 if (groundCollider != null)
                 {
                     // Jika menginjak daun (platform satu arah)

@@ -79,7 +79,10 @@ public class PlayerInteraction : MonoBehaviour
         {
             isInteracting = true;
             interactionProgress += Time.deltaTime;
-            playerMovement.SetAimingState(true); 
+            if (!isInteracting) // Lakukan ini hanya di frame pertama interaksi
+            {
+                playerMovement.SetInteractingState(true);
+            }
             
             OnInteractionProgress?.Invoke(interactionProgress / interactionDuration);
             OnInteractionStateChanged?.Invoke(true);
@@ -155,7 +158,7 @@ public class PlayerInteraction : MonoBehaviour
     {
         isInteracting = false;
         interactionProgress = 0f;
-        playerMovement.SetAimingState(false); // Kembalikan kecepatan gerak normal
+        playerMovement.SetInteractingState(false); // Kembalikan kecepatan gerak normal
         OnInteractionStateChanged?.Invoke(false);
         GuideManager.Instance.HideSituationalGuide(GuideType.Interact);
     }

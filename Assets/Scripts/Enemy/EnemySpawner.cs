@@ -2,6 +2,9 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// --- ENUM BARU UNTUK PILIHAN SISI ---
+public enum SpawnSide { Kanan, Kiri }
+
 public class EnemySpawner : MonoBehaviour
 {
     [Header("Pengaturan Spawner")]
@@ -16,7 +19,9 @@ public class EnemySpawner : MonoBehaviour
     [Tooltip("Jarak spawn di atas permukaan platform (untuk ulat darat).")]
     [SerializeField] private float spawnHeightOffset = 1f;
     [Tooltip("Jarak spawn di samping platform (untuk ulat udara).")]
-    [SerializeField] private float spawnSideOffset = 0.5f; // Variabel baru
+    [SerializeField] private float spawnSideOffset = 0.5f;
+    [Tooltip("Sisi mana untuk memunculkan ulat udara (Tipe 2).")]
+    [SerializeField] private SpawnSide ulatUdaraSpawnSide = SpawnSide.Kanan; // <-- VARIABEL BARU
 
     // Variabel internal untuk melacak musuh
     private List<GameObject> spawnedEnemies = new List<GameObject>();
@@ -31,7 +36,6 @@ public class EnemySpawner : MonoBehaviour
     void Update()
     {
         spawnedEnemies.RemoveAll(enemy => enemy == null);
-
         if (spawnedEnemies.Count < maxEnemiesOnPlatform && !isSpawning)
         {
             StartCoroutine(SpawnEnemyRoutine());
@@ -63,14 +67,24 @@ public class EnemySpawner : MonoBehaviour
 
         if (enemyToSpawn.GetComponent<UlatUdaraAttack>() != null)
         {
-            // --- LOGIKA KHUSUS UNTUK ULAT TIPE 2 (YANG DIPERBARUI) ---
-            float spawnX = spawnAreaCollider.bounds.max.x + spawnSideOffset;
-            // Pilih posisi Y acak di sepanjang sisi kanan collider platform
+            // --- LOGIKA DIPERBARUI UNTUK MEMILIH SISI ---
+            float spawnX;
             float spawnY = Random.Range(spawnAreaCollider.bounds.min.y, spawnAreaCollider.bounds.max.y);
-            spawnPosition = new Vector2(spawnX, spawnY);
+
+            if (ulatUdaraSpawnSide == SpawnSide.Kanan)
+            {
+                // Muncul di sisi kanan, menghadap ke kiri
+                spawnX = spawnAreaCollider.bounds.max.x + spawnSideOffset;
+                spawnRotation = Quaternion.Euler(0, 0, -90);
+            }
+            else // Jika diatur ke Kiri
+            {
+                // Muncul di sisi kiri, menghadap ke kanan
+                spawnX = spawnAreaCollider.bounds.min.x - spawnSideOffset;
+                spawnRotation = Quaternion.Euler(0, 0, 90);
+            }
             
-            // Rotasi diubah menjadi -90 agar ulat menghadap ke kiri (ke arah area permainan)
-            spawnRotation = Quaternion.Euler(0, 0, -90);
+            spawnPosition = new Vector2(spawnX, spawnY);
         }
         else
         {

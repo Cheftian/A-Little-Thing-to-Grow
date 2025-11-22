@@ -116,6 +116,12 @@ public class PlayerHealth : MonoBehaviour
         AudioManager.Instance.PlaySFX("PlayerDeath");
         Debug.Log("Player Telah Kalah!");
         AudioManager.Instance.PlaySFX("GameOver");
-        SceneManager.LoadScene("MainMenu");
-    }
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.TriggerGameOver();
+        }
+
+        // Nonaktifkan GameObject Player agar tidak bisa digerakkan atau diserang lagi
+        gameObject.SetActive(false);
+        }
 }

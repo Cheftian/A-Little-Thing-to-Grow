@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6836167353262195400}
   - component: {fileID: 4009596421564220458}
   - component: {fileID: 719187014322738610}
+  - component: {fileID: 6324077646306877948}
   m_Layer: 9
   m_Name: Ulat3
   m_TagString: Untagged
@@ -32,7 +33,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -9.440001, y: -0.6499996, z: 0}
-  m_LocalScale: {x: 0.6128, y: 0.6128, z: 0.6128}
+  m_LocalScale: {x: 0.22, y: 0.22, z: 0.6128}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 635839402193836668}
@@ -81,8 +82,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: -3699143729068029816, guid: a0df330ae80917f45929883e5133d82f, type: 3}
+  m_SortingOrder: 9
+  m_Sprite: {fileID: 6527755641940402684, guid: 92dd37966b17c3f4a88314aab704071b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -127,17 +128,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.20340323, y: 0.045590043}
+  m_Offset: {x: -0.0036034584, y: -0.49233094}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4.08, y: 1.36}
+    oldSize: {x: 15.37, y: 4}
     newSize: {x: 1, y: 2}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3.6731935, y: 0.9040997}
+  m_Size: {x: 15.445987, y: 2.7791398}
   m_EdgeRadius: 0
 --- !u!50 &862466683967105261
 Rigidbody2D:
@@ -178,6 +179,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53e46235536dfa748a9c46ba07844a6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  wormType: 0
   groundCheck: {fileID: 635839402193836668}
   groundLayer:
     serializedVersion: 2
@@ -186,6 +188,7 @@ MonoBehaviour:
   chaseSpeed: 2
   detectionRadius: 3
   idleDuration: 2
+  smoothTime: 0.2
 --- !u!114 &4009596421564220458
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -218,6 +221,28 @@ MonoBehaviour:
   knockbackForce: 10
   itemDropPrefab: {fileID: 5395875275626680723, guid: 044a5f760b7670c47bdfbc41c56585cd, type: 3}
   dropChance: 75
+--- !u!95 &6324077646306877948
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 600007197125981970}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f8da934f80caa3745bd0c0df6e8b6737, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7198581877140011601
 GameObject:
   m_ObjectHideFlags: 0

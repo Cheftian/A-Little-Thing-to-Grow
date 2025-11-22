@@ -9,7 +9,7 @@ public class PauseManager : MonoBehaviour
     [Tooltip("Panel utama yang berisi tombol-tombol pause.")]
     [SerializeField] private GameObject pausePanel;
     [Tooltip("Panel HUD yang aktif saat bermain (berisi jumlah bawang, keranjang, dll.).")]
-    [SerializeField] private GameObject inGameHudPanel; // <-- VARIABEL BARU DI SINI
+    [SerializeField] private GameObject inGameHudPanel;
 
     [Header("Efek Blur (URP)")]
     [Tooltip("Seret objek 'Global Volume' yang ada di scene ke sini.")]

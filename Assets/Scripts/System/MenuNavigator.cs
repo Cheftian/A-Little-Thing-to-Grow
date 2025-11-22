@@ -16,6 +16,11 @@ public class MenuNavigator : MonoBehaviour
 
     public void BackToMenu()
     {
+        SceneManager.LoadScene("MainMenu");
+    }
+
+    public void BackToMenuWithLoading()
+    {
         SceneLoader.sceneToLoad = "MainMenu";
         SceneManager.LoadScene("LoadingScene");
     }
